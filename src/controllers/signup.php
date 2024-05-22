@@ -21,7 +21,7 @@ include './components/header.php';
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
                                     name</label>
                                 <input type="text" id="first_name" name="first_name"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focu   s:border-red-500 block w-full p-2.5"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5"
                                     placeholder="John" required />
                             </div>
                             <div>
@@ -74,7 +74,7 @@ include './components/header.php';
                             class="w-full text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Create
                             an account</button>
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                            Already have an account? <a href="#"
+                            Already have an account? <a href="./login.php"
                                 class="font-medium text-red-600 hover:underline dark:text-red-500">Login
                                 here</a>
                         </p>
@@ -136,7 +136,12 @@ include './components/header.php';
         </div>
     </div>
 
-    <?php include './components/footer.php'; ?>
+
+    <script src="../js/flowbite.min.js"></script>
+    <script src="../js/flowbite.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
     $(document).ready(function() {
         $('#signup-form').submit(function(event) {
@@ -172,7 +177,7 @@ include './components/header.php';
                             timer: 3000,
                             icon: "success"
                         }).then(function() {
-                            window.location.href = 'home.php';
+                            window.location.href = 'login.php';
                         });
                     } else {
                         alert('Error: ' + response.message);

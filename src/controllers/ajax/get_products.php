@@ -36,7 +36,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if(empty($products)) {
     echo '<div class="left-0 w-full h-auto absolute flex justify-center items-center overflow-hidden">
     <img class="h-96 max-w-full object-cover" src="../images/no_products_found.png" alt="No products">
-  </div>' ;
+</div>' ;
 } else {
     foreach ($products as $row) {
 ?>
@@ -66,12 +66,12 @@ if(empty($products)) {
     <!-- PRODUCT -->
     <div data-category="<?php echo $row['category_name']; ?>"
         class="product w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-        <a href="#" class="h-96 block">
+        <a href="./product_info.php?prod_id=<?php echo $row['prod_id']; ?>" class="h-96 block">
             <img class="rounded-t-lg object-cover object-center h-full w-full"
                 src="<?php echo $row['img_directory'] ?? '../images/placeholder.svg'; ?>" alt="product image" />
         </a>
         <div class="px-5 pb-5">
-            <a href="../product_info.php?prod_id=<?php echo $row['prod_id']; ?>">
+            <a href="./product_info.php?prod_id=<?php echo $row['prod_id']; ?>">
                 <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
                     <?php echo $row['prod_name']; ?>
                 </h5>

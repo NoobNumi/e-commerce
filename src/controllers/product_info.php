@@ -33,13 +33,13 @@ if ($prod_id) {
     <form action="" method="post">
         <div class="product-container container w-full flex justify-center md:flex-col mx-auto px-4 md:px-8 py-8">
             <div class="img-products px-4 order-1 md:order-none">
-                <div class="overflow-hidden">
+                <div class="overflow-hidden easyzoom">
                     <?php if (!empty($images)) { ?>
-                    <img class="w-full h-96 object-cover rounded-t-lg" src="<?php echo $images[0]['img_directory']; ?>"
-                        //MAIN IMAGE alt="Product Image">
+                    <img class=" w-full h-96 object-cover rounded-t-lg" src="<?php echo $images[0]['img_directory']; ?>"
+                        alt="Product Image">
                     <?php } else { ?>
-                    <img class="w-full h-96 object-cover rounded-t-lg" src="../images/placeholder.svg" // Placeholder if
-                        no images alt="Product Image">
+                    <img class="w-full h-96 object-cover rounded-t-lg" src="../images/placeholder.svg"
+                        alt="Product Image">
                     <?php } ?>
                     <div class="grid grid-cols-5 mt-7 gap-4 order-none md:order-1 overflow-x-auto">
                         <?php foreach ($images as $image) { ?>
@@ -89,11 +89,11 @@ if ($prod_id) {
                     <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded ms-3">5.0</span>
                 </div>
                 <span class="text-3xl font-bold text-gray-900 dark:text-white">₱<?php echo $product['price']; ?></span>
-                <div class="mx-auto mt-6">
-                    <label for="quantity-input"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity:</label>
+                <div class="mx-auto mt-5">
+                    <label for="bedrooms-input"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Choose quantity:</label>
                     <div class="relative flex items-center max-w-[8rem]">
-                        <button type="button" id="decrement-button" data-input-counter-decrement="quantity-input"
+                        <button type="button" id="decrement-button" data-input-counter-decrement="bedrooms-input"
                             class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                             <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
@@ -101,12 +101,12 @@ if ($prod_id) {
                                     stroke-width="2" d="M1 1h16" />
                             </svg>
                         </button>
-
-                        <input type="text" id="quantity-input" data-input-counter
+                        <input type="text" id="bedrooms-input" data-input-counter data-input-counter-min="1"
+                            data-input-counter-max="<?php echo $product['stocks']; ?>"
                             aria-describedby="helper-text-explanation"
-                            class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="1" required min="1" />
-                        <button type="button" id="increment-button" data-input-counter-increment="quantity-input"
+                            class="bg-gray-50 border-x-0 border-gray-300 h-11 font-medium text-center text-gray-900 focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="" value="1" required />
+                        <button type="button" id="increment-button" data-input-counter-increment="bedrooms-input"
                             class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                             <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
@@ -116,9 +116,10 @@ if ($prod_id) {
                         </button>
                     </div>
                     <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                        <?php echo $product['stocks']; ?> piece/s available
-                    </p>
+                        <?php echo $product['stocks']; ?> piece/s available</p>
                 </div>
+
+
                 <div class="flex items-center justify-between mt-7
                     ">
                     <div class="flex justify-between">
@@ -144,42 +145,24 @@ if ($prod_id) {
     <?php include './components/footer.php';  ?>
 
     <script>
-    const quantityInput = document.getElementById('quantity-input');
-    const decrementButton = document.getElementById('decrement-button');
+    document.addEventListener('DOMContentLoaded', function() {
+        const decrementButton = document.getElementById('decrement-button');
+        const incrementButton = document.getElementById('increment-button');
+        const quantityInput = document.getElementById('quantity-input');
 
-    decrementButton.addEventListener('click', () => {
-        const currentValue = parseInt(quantityInput.value);
-        if (currentValue > 1) {
-            quantityInput.value = currentValue - 1;
-        } else {
-            quantityInput.value = 1;
-        }
-        decrementButton.disabled = quantityInput.value > 1 ? false :
-            true; // Update disabled state after decrement
-    });
-
-    quantityInput.addEventListener('change', () => {
-        const value = parseInt(quantityInput.value);
-        if (value === 0) {
-            quantityInput.value = 1; // Set back to 1 if user enters 0
-            alert('Quantity cannot be zero. Minimum quantity is 1.');
-        }
-    });
-
-    const form = quantityInput.closest('form'); // Assuming this input is inside a form
-
-    if (form) {
-        form.addEventListener('submit', (event) => {
-            const value = parseInt(quantityInput.value);
-            if (value === 0) {
-                event.preventDefault(); // Prevent form submission
-                alert('Quantity cannot be zero. Minimum quantity is 1.');
+        decrementButton.addEventListener('click', function() {
+            let value = parseInt(quantityInput.value);
+            if (value > 1) {
+                value--;
+                quantityInput.value = value;
             }
         });
-    }
+
+        incrementButton.addEventListener('click', function() {
+            let value = parseInt(quantityInput.value);
+            value++;
+            quantityInput.value = value;
+        });
+    });
     </script>
-
-
-
-
 </body>

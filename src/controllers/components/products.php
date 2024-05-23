@@ -95,7 +95,7 @@ $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
                         src="<?php echo $row['img_directory'] ?? '../images/placeholder.svg'; ?>" alt="product image" />
                 </a>
                 <div class="px-5 pb-5">
-                    <a href="#">
+                    <a href="product_info.php?prod_id=<?php echo $row['prod_id']; ?>">
                         <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
                             <?php echo $row['prod_name']; ?>
                         </h5>

@@ -1,7 +1,8 @@
 <?php
-    session_start()
-    
-
+    $response = array('success' => false, 'message' => '');
+    if ($response['success']) {
+        $_SESSION['user_id'] = $user_id;
+    }
 ?>
 
 <nav class="bg-white border-gray-200 dark:bg-gray-900">
@@ -34,7 +35,15 @@
                     placeholder="Search for products...">
             </div>
 
-            <a href="../controllers/cart.php" type="button"
+            <?php if (!isset($_SESSION['user_id'])) { ?>
+
+
+            <a type="button" href="./login.php"
+                class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2">Login</a>
+
+            <?php } else {  ?>
+
+            <a href="../controllers/cart.php" id="cartButton" type="button"
                 class="relative inline-flex items-center p-1 text-sm font-medium text-center bg-transparent focus:outline-none">
                 <svg class="w-10 h-10 text-red-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
@@ -42,11 +51,10 @@
                         d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312" />
                 </svg>
                 <span class="sr-only">Notifications</span>
-                <div
-                    class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
-                    20</div>
+                <div id="cartCount"
+                    class="hidden absolute items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
+                </div>
             </a>
-
 
             <button type="button"
                 class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
@@ -74,13 +82,18 @@
                         <a href="#"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>
                     </li>
+
                     <li>
-                        <a href="#"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign
+                        <a href="./logout.php"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Log
                             out</a>
                     </li>
                 </ul>
             </div>
+
+            <?php }   ?>
+
+
             <button data-collapse-toggle="navbar-search" type="button"
                 class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                 aria-controls="navbar-search" aria-expanded="false">
@@ -117,19 +130,59 @@
                         class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">About</a>
                 </li>
                 <li>
-                    <a href="../controllers/components/products.php"
+                    <a href="../controllers/    components/products.php"
                         class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Products</a>
                 </li>
                 <li>
                     <a href="../controllers/components/products.php"
                         class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Orders</a>
                 </li>
+                <?php if (!isset($_SESSION['user_id'])): ?>
                 <li>
                     <a href="../controllers/signup.php"
-                        class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Sign
-                        Up</a>
+                        class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                        Sign Up
+                    </a>
                 </li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>
 </nav>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    updateCartCount();
+
+    function updateCartCount() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "./ajax/get_cart_count.php", true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    var count = parseInt(xhr.responseText);
+                    if (!isNaN(count)) {
+                        if (count > 0) {
+                            document.getElementById("cartCount").innerText = count;
+                            document.getElementById("cartCount").classList.remove("hidden");
+                            document.getElementById("cartCount").classList.add("inline-flex");
+                        } else {
+                            document.getElementById("cartCount").classList.add("hidden");
+                            document.getElementById("cartCount").classList.remove("inline-flex");
+                        }
+                    } else {
+                        console.error("Invalid response from server: Not a number");
+                    }
+                } else {
+                    console.error("Failed to fetch cart count. Status code:", xhr.status);
+                }
+            }
+        };
+        xhr.send();
+    }
+
+    document.getElementById("cartButton").addEventListener("click", function() {
+        updateCartCount();
+    });
+});
+</script>

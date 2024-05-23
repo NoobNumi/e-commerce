@@ -1,13 +1,18 @@
 <?php
-    include  './connection.php' ;
+include './connection.php';
 $category = isset($_GET['category']) ? $_GET['category'] : null;
 
 if ($category) {
     $stmt = $conn->prepare("
         SELECT p.prod_id, p.prod_name, p.price, p.stocks, pi.img_directory, c.category_name
         FROM products p
-        INNER JOIN product_images pi ON p.prod_id = pi.prod_id
         INNER JOIN category c ON p.category_id = c.category_id
+        INNER JOIN (
+            SELECT prod_id, MIN(img_id) AS min_img_id
+            FROM product_images
+            GROUP BY prod_id
+        ) min_img ON p.prod_id = min_img.prod_id
+        INNER JOIN product_images pi ON min_img.min_img_id = pi.img_id
         WHERE c.category_name = :category
     ");
     $stmt->bindParam(':category', $category);
@@ -15,16 +20,20 @@ if ($category) {
     $stmt = $conn->prepare("
         SELECT p.prod_id, p.prod_name, p.price, p.stocks, pi.img_directory, c.category_name
         FROM products p 
-        INNER JOIN product_images pi ON p.prod_id = pi.prod_id
         INNER JOIN category c ON p.category_id = c.category_id
+        INNER JOIN (
+            SELECT prod_id, MIN(img_id) AS min_img_id
+            FROM product_images
+            GROUP BY prod_id
+        ) min_img ON p.prod_id = min_img.prod_id
+        INNER JOIN product_images pi ON min_img.min_img_id = pi.img_id
     ");
 }
 
 $stmt->execute();
-
 $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-
 ?>
+
 
 <div class="px-8 w-full" style="margin-top: 50px; margin-bottom: 50px;">
     <h1 class="text-5xl font-semibold text-center mb-4 underline-red">Products</h1>
@@ -81,7 +90,7 @@ $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
             <div data-category="<?php echo $row['category_name']; ?>"
                 class="product w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                <a href="#" class=" h-96 block">
+                <a href="product_info.php?prod_id=<?php echo $row['prod_id']; ?>" class=" h-96 block">
                     <img class="rounded-t-lg object-cover object-center h-full w-full"
                         src="<?php echo $row['img_directory'] ?? '../images/placeholder.svg'; ?>" alt="product image" />
                 </a>

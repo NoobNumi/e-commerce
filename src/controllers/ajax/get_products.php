@@ -6,17 +6,27 @@ if ($category) {
     $stmt = $conn->prepare("
         SELECT p.prod_id, p.prod_name, p.price, p.stocks, pi.img_directory, c.category_name
         FROM products p
-        INNER JOIN product_images pi ON p.prod_id = pi.prod_id
         INNER JOIN category c ON p.category_id = c.category_id
+        INNER JOIN (
+            SELECT prod_id, MIN(img_id) AS min_img_id
+            FROM product_images
+            GROUP BY prod_id
+        ) min_img ON p.prod_id = min_img.prod_id
+        INNER JOIN product_images pi ON min_img.min_img_id = pi.img_id
         WHERE c.category_name = :category
     ");
     $stmt->bindParam(':category', $category);
 } else {
     $stmt = $conn->prepare("
         SELECT p.prod_id, p.prod_name, p.price, p.stocks, pi.img_directory, c.category_name
-        FROM products p
-        INNER JOIN product_images pi ON p.prod_id = pi.prod_id
+        FROM products p 
         INNER JOIN category c ON p.category_id = c.category_id
+        INNER JOIN (
+            SELECT prod_id, MIN(img_id) AS min_img_id
+            FROM product_images
+            GROUP BY prod_id
+        ) min_img ON p.prod_id = min_img.prod_id
+        INNER JOIN product_images pi ON min_img.min_img_id = pi.img_id
     ");
 }
 
@@ -61,7 +71,7 @@ if(empty($products)) {
                 src="<?php echo $row['img_directory'] ?? '../images/placeholder.svg'; ?>" alt="product image" />
         </a>
         <div class="px-5 pb-5">
-            <a href="#">
+            <a href="../product_info.php?prod_id=<?php echo $row['prod_id']; ?>">
                 <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
                     <?php echo $row['prod_name']; ?>
                 </h5>

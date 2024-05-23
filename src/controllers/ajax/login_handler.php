@@ -23,8 +23,11 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         if (!password_verify($password, $user['password'])) {
             $response['error'] = 'credentials_incorrect';
             echo json_encode($response);
-            exit();
+            exit();     
         }
+
+        session_start();
+        $_SESSION['user_id'] = $user['user_id']; 
 
         $response['success'] = true;
 

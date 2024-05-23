@@ -45,6 +45,13 @@ include './components/header.php';
                         <button type="submit" name="submit"
                             class="w-full text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Login
                             to your account</button>
+
+                        <hr class="hr-text" data-content="or">
+
+                        <a type="button" href="./home.php"
+                            class="w-full text-red-700 border border-red-300 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Continue
+                            browsing for products</a>
+
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                             Don't have an account? <a href="./signup.php"
                                 class="font-medium text-red-600 hover:underline dark:text-red-500">Signup here</a>

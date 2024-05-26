@@ -120,14 +120,16 @@ if ($prod_id) {
                 </div>
 
 
+                <?php if (!isset($_SESSION['user_id'])) { ?>
+
                 <div class="flex items-center justify-between mt-7
-                    ">
+">
                     <div class="flex justify-between">
-                        <button type="button"
+                        <a href="./login.php" type="button"
                             class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 ">
                             Buy now
-                        </button>
-                        <button type="button"
+                        </a>
+                        <a href="./login.php" type="button"
                             class="text-red-700 bg-red-100 hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2">
                             <svg class="w-3.5 h-3.5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor" viewBox="0 0 18 21">
@@ -135,9 +137,32 @@ if ($prod_id) {
                                     d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
                             </svg>
                             Add to Cart
-                        </button>
+                        </a>
                     </div>
                 </div>
+
+                <?php } else {  ?>
+
+                <div class="flex items-center justify-between mt-7
+">
+                    <div class="flex justify-between">
+                        <a href="./check_out.php?prod_id=<?php echo $product['prod_id']; ?>" type="button"
+                            class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 ">
+                            Buy now
+                        </a>
+                        <a href="./check_out.php" type="button"
+                            class="text-red-700 bg-red-100 hover:bg-red-500 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2">
+                            <svg class="w-3.5 h-3.5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor" viewBox="0 0 18 21">
+                                <path
+                                    d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
+                            </svg>
+                            Add to Cart
+                        </a>
+                    </div>
+                </div>
+
+                <?php }   ?>
             </div>
         </div>
     </form>

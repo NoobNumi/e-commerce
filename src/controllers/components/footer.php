@@ -104,6 +104,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="../js/sweetalert2.min.js"></script>
 <script src="../js/easyzoom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
 <script>
 const footer = document.getElementById('myFooter');
 if (window.location.href.endsWith('/home.php')) {

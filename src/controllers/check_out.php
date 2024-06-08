@@ -66,31 +66,34 @@
                 </div>
                 <div class="grid md:grid-cols-3 md:gap-6">
                     <div class="relative z-0 w-full mb-5 group">
-                        <label for="countries"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Country</label>
-                        <select id="countries"
+                        <label for="region"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Region</label>
+                        <select id="region"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option selected>Choose a country</option>
-                            <option value="US">United States</option>
-                            <option value="CA">Canada</option>
-                            <option value="FR">France</option>
-                            <option value="DE">Germany</option>
+                            <option selected>Choose a region</option>
                         </select>
                     </div>
                     <div class="relative z-0 w-full mb-5 group">
-                        <label for="countries"
+                        <label for="province"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Province</label>
+                        <select id="province"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option selected>Choose a province</option>
+                        </select>
+                    </div>
+                    <div class="relative z-0 w-full mb-5 group">
+                        <label for="city"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">City</label>
-                        <select id="countries"
+                        <select id="city"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option selected>Choose a country</option>
-                            <option value="US">United States</option>
-                            <option value="CA">Canada</option>
-                            <option value="FR">France</option>
-                            <option value="DE">Germany</option>
+                            <option selected>Choose a city</option>
                         </select>
                     </div>
+
+                </div>
+                <div class="grid md:grid-cols-3 md:gap-6">
                     <div class="relative z-0 w-full mb-5 group">
-                        <label for="zip-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ZIP
+                        <label for="zip_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ZIP
                             code:</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
@@ -100,13 +103,11 @@
                                         d="M8 0a7.992 7.992 0 0 0-6.583 12.535 1 1 0 0 0 .12.183l.12.146c.112.145.227.285.326.4l5.245 6.374a1 1 0 0 0 1.545-.003l5.092-6.205c.206-.222.4-.455.578-.7l.127-.155a.934.934 0 0 0 .122-.192A8.001 8.001 0 0 0 8 0Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
                                 </svg>
                             </div>
-                            <input type="text" id="zip-input" aria-describedby="helper-text-explanation"
+                            <input type="text" id="zip_code" aria-describedby="helper-text-explanation"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="12345 or 12345-6789" pattern="^\d{5}(-\d{4})?$" required />
                         </div>
                     </div>
-                </div>
-                <div class="grid md:grid-cols-2 md:gap-6">
                     <div class="relative z-0 mb-5 group">
                         <label for="house_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                             House Number
@@ -235,3 +236,81 @@
 </div>
 
 <?php include './components/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const regionSelect = document.getElementById('region');
+    const provinceSelect = document.getElementById('province');
+    const citySelect = document.getElementById('city');
+    const zipCodeInput = document.getElementById('zip_code');
+
+    function populateSelect(selectElement, data, valueKey, textKey) {
+        selectElement.innerHTML = '<option selected>Choose an option</option>';
+        data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item[valueKey];
+            option.textContent = item[textKey];
+            selectElement.appendChild(option);
+        });
+    }
+
+    // Fetch and populate regions
+    fetch('../js/region.json')
+        .then(response => response.json())
+        .then(regions => {
+            populateSelect(regionSelect, regions, 'region_code', 'region_name');
+        })
+        .catch(error => console.error('Error fetching regions:', error));
+
+    // Event listener for region change to populate provinces
+    regionSelect.addEventListener('change', function() {
+        const selectedRegionCode = this.value;
+        provinceSelect.innerHTML = '<option selected>Choose a province</option>';
+        citySelect.innerHTML = '<option selected>Choose a city</option>';
+        zipCodeInput.value = '';
+
+        fetch('../js/province.json')
+            .then(response => response.json())
+            .then(provinces => {
+                const filteredProvinces = provinces.filter(province => province.region_code ===
+                    selectedRegionCode);
+                populateSelect(provinceSelect, filteredProvinces, 'province_code', 'province_name');
+            })
+            .catch(error => console.error('Error fetching provinces:', error));
+    });
+
+    // Event listener for province change to populate cities
+    provinceSelect.addEventListener('change', function() {
+        const selectedProvinceCode = this.value;
+        citySelect.innerHTML = '<option selected>Choose a city</option>';
+        zipCodeInput.value = '';
+
+        fetch('../js/cities.json')
+            .then(response => response.json())
+            .then(cities => {
+                const filteredCities = cities.filter(city => city.province_code ===
+                    selectedProvinceCode);
+                populateSelect(citySelect, filteredCities, 'city_code', 'city_name');
+            })
+            .catch(error => console.error('Error fetching cities:', error));
+    });
+
+    // Event listener for city change to populate zip code
+    citySelect.addEventListener('change', function() {
+        const selectedCityCode = this.value;
+        zipCodeInput.value = '';
+
+        fetch('../js/zip_code.json')
+            .then(response => response.json())
+            .then(zipCodes => {
+                const filteredZipCodes = zipCodes.filter(zipCode => zipCode.city_code ===
+                    selectedCityCode);
+                if (filteredZipCodes.length > 0) {
+                    zipCodeInput.value = filteredZipCodes[0].zip_code;
+                } else {
+                    console.error('No zip code found for the selected city');
+                }
+            })
+            .catch(error => console.error('Error fetching zip codes:', error));
+    });
+});
+</script>
